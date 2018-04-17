@@ -1,0 +1,24 @@
+' Usage
+Dim value As Boolean = My.Computer.Network.Ping(hostNameOrAddress)
+Dim value As Boolean = My.Computer.Network.Ping(address)
+Dim value As Boolean = My.Computer.Network.Ping(hostNameOrAddress ,timeout)
+Dim value As Boolean = My.Computer.Network.Ping(address ,timeout)
+' Declaration
+Public Function Ping( _
+   ByVal hostNameOrAddress As String _
+) As Boolean
+' -or-
+Public Function Ping( _
+   ByVal address As System.Uri _
+) As Boolean
+' -or-
+Public Function Ping( _
+   ByVal hostNameOrAddress As String, _
+   ByVal timeout As Integer _
+) As Boolean
+' -or-
+Public Function Ping( _
+   ByVal address As System.Uri, _
+   ByVal timeout As Integer _
+) As Boolean
+'For more details click https://msdn.microsoft.com/en-us/library/he5sca5t(v=vs.90).aspx
