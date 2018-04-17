@@ -1,0 +1,49 @@
+Private Sub loadCurrentEmpList()
+
+
+
+        Dim CurrentEmployeeList As New DataSet
+
+
+
+        Try
+
+
+
+            Dim sql As String = "Select * from public.current_wipro_emp_name"
+
+
+
+            Using MyCon As New OdbcConnection(con)
+
+                Using adapter As New OdbcDataAdapter(sql, MyCon)
+
+                    adapter.Fill(CurrentEmployeeList, "CurrentEmployeeList")
+
+                End Using
+
+            End Using
+
+
+
+            cmbEmployeeSearch.ItemsSource = CurrentEmployeeList.Tables("CurrentEmployeeList").DefaultView
+
+
+
+        Catch ex As Exception
+
+            MsgBox(ex.Message)
+
+
+
+        Finally
+
+            If CurrentEmployeeList IsNot Nothing Then
+
+                CurrentEmployeeList.Dispose()
+
+            End If
+
+        End Try
+
+    End Sub
