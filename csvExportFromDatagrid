@@ -1,0 +1,28 @@
+Public Sub ExportToCsv()
+        Dim dg As DataGrid = setDatagrid
+        Dim path As String = vbNullString
+
+        dg.SelectAllCells()
+        dg.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader
+        ApplicationCommands.Copy.Execute(Nothing, dg)
+        dg.UnselectAllCells()
+        Dim result As [String] = DirectCast(Clipboard.GetData(DataFormats.CommaSeparatedValue), String)
+        Try
+            Using ofd As New System.Windows.Forms.SaveFileDialog()
+                ofd.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*"
+                ofd.FilterIndex = 1
+                ofd.RestoreDirectory = True
+
+                If ofd.ShowDialog = System.Windows.Forms.DialogResult.OK Then
+                    path = ofd.FileName
+                End If
+            End Using
+
+            Dim sw As New StreamWriter(path)
+            sw.WriteLine(result)
+            sw.Close()
+            Process.Start(path)
+        Catch ex As Exception
+            MessageBox.Show(ex.Message)
+        End Try
+    End Sub
