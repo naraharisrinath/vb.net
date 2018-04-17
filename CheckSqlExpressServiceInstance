@@ -1,0 +1,42 @@
+Imports System
+Imports System.ServiceProcess
+
+Module Module1
+
+    Sub Main()
+
+        Dim myServiceName As String = "MSSQL$SQLEXPRESS" 'service name of SQL Server Express
+        Dim status As String  'service status (For example, Running or Stopped)
+        Dim mySC As ServiceController
+
+        Console.WriteLine("Service: " & myServiceName)
+
+        'display service status: For example, Running, Stopped, or Paused
+        mySC = New ServiceController(myServiceName)
+        Try
+            status = mySC.Status.ToString
+        Catch ex As Exception
+            Console.WriteLine("Service not found. It is probably not installed. [exception=" & ex.Message & "]")
+            Console.ReadLine()
+            End
+        End Try
+        Console.WriteLine("Service status : " & status)
+
+        'if service is Stopped or StopPending, you can run it with the following code.
+        If mySC.Status.Equals(ServiceControllerStatus.Stopped) Or mySC.Status.Equals(ServiceControllerStatus.StopPending) Then
+            Try
+                Console.WriteLine("Starting the service...")
+                mySC.Start()
+                mySC.WaitForStatus(ServiceControllerStatus.Running)
+                Console.WriteLine("The service is now " & mySC.Status.ToString)
+
+            Catch ex As Exception
+                Console.WriteLine("Error in starting the service: " & ex.Message)
+            End Try
+        End If
+
+        Console.WriteLine("Press a key to end the application...")
+        Console.ReadLine()
+        End
+    End Sub
+End Module
