@@ -1,0 +1,76 @@
+Public Sub GenerateExcel()
+        Dim Excel = New Microsoft.Office.Interop.Excel.Application()
+
+        Try
+            Dim Workbook = Excel.Workbooks.Add(Type.Missing)
+            Dim Worksheet = DirectCast(Workbook.ActiveSheet, Microsoft.Office.Interop.Excel.Worksheet)
+            Dim dv As DataRowView
+            Dim rowCount As Long
+            Dim colCount As Long
+            Dim colRef As Integer = 0
+            Dim nextRow As Long = 2
+            Dim nextCol As Long = 1
+            Dim dcc As DataColumnCollection
+            Dim path As String = vbNullString
+
+            Excel.DisplayAlerts = False
+            Excel.Visible = False
+
+            Worksheet.Name = SheetNameValue
+
+            rowCount = DatagridyValue.Items.Count
+            colCount = DatagridyValue.Columns.Count
+
+            'Headers
+            nextCol = 1
+            For Each dv In DatagridyValue.ItemsSource
+                dcc = dv.Row.Table.Columns
+
+                For i As Integer = 0 To dcc.Count - 1
+                    Worksheet.Cells(1, nextCol) = dcc(i).ToString
+                    nextCol = nextCol + 1
+                Next
+
+                Exit For 'Once headers are wriiten to excel, exit for loop
+
+            Next
+
+            nextCol = 1
+            For Each dv In DatagridyValue.ItemsSource
+                For colRef = 0 To colCount - 1
+                    Worksheet.Cells(nextRow, nextCol) = dv(colRef).ToString
+                    nextCol = nextCol + 1
+                Next
+
+                nextRow = nextRow + 1
+                nextCol = 1
+            Next
+
+            Worksheet.Columns.AutoFit()
+
+            'Get path of selected text file containing search data
+            Using ofd As New System.Windows.Forms.SaveFileDialog()
+                ofd.Filter = "csv files (*.csv)|*.csv|Excel files (*.xlsx)|*.xlsx|All files (*.*)|*.*"
+                ofd.FilterIndex = 1
+                ofd.RestoreDirectory = True
+
+                If ofd.ShowDialog = System.Windows.Forms.DialogResult.OK Then
+                    path = ofd.FileName
+                End If
+            End Using
+
+            Excel.Visible = True
+            Excel.DisplayAlerts = True
+            Workbook.SaveAs(path)
+
+        Catch ex As Exception
+            msg.Readcount = -1
+            msg.setForm = frm
+            msg.lblMessage = ex.Message
+            msg.Assign()
+
+        Finally
+            Marshal.FinalReleaseComObject(Excel)
+        End Try
+
+    End Sub
