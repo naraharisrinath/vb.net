@@ -1,0 +1,44 @@
+'Code that checks AD authentication followed by user existance in a group
+Private Sub SignIn_Click(sender As Object, e As RoutedEventArgs)
+        Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait
+
+        If CheckValidations = True Then
+            If CheckInternetConn() = True Then
+                If AuthenticateGroup(Username.Text.ToString, password.Password.ToString, "cisco.com", "cloudbase-dev") = True Then
+                    Dim Window2 As MainWindow = New MainWindow()
+                    Window2.Show()
+                    Me.Close()
+                Else
+                    MessageBox.Show("Invalid Username or Password", CLOUDBASE_SUPPORT_APP, MessageBoxButton.OK)
+                End If
+            Else
+                MessageBox.Show("Please check your internet or VPN connection and try later", CLOUDBASE_SUPPORT_APP, MessageBoxButton.OK)
+            End If
+        Else
+            MessageBox.Show("Please provide username or password", CLOUDBASE_SUPPORT_APP, MessageBoxButton.OK)
+        End If
+
+        'System.Windows.Application.Current.Shutdown()
+        Mouse.OverrideCursor = System.Windows.Input.Cursors.Arrow
+    End Sub
+
+    Private Function AuthenticateGroup(userName As String, password As String, domain As String, group As String) As Boolean
+
+        Try
+            Dim entry As New DirectoryEntry(Convert.ToString("LDAP://") & domain, userName, password)
+            Dim mySearcher As New DirectorySearcher(entry)
+            mySearcher.Filter = (Convert.ToString((Convert.ToString("(&(objectClass=user)(|(cn=") & userName) + ")(sAMAccountName=") & userName) + ")))"
+            Dim result As SearchResult = mySearcher.FindOne()
+
+            AuthenticateGroup = False
+            For Each GroupPath As String In result.Properties("memberOf")
+                If GroupPath.Contains(group) Then
+                    Return True
+                End If
+            Next
+        Catch ex As Exception
+            'MessageBox.Show(ex.Message, CLOUDBASE_SUPPORT_APP, MessageBoxButton.OK)
+            Return False
+        End Try
+
+    End Function
