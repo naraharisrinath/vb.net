@@ -1,1 +1,7 @@
+Public sub Refreshquery Table (x1wkb As Excel.Workbook, x1wksh  As Excel. Worksheet)
+Dim qt As QueryTable
+qt = X1wksh .ListObjects(1).QueryTable  ‘Database connection stored in listobjects 
+If  qt. Refreshing Then qt.CancelRefresh( )
+qt. Refresh(BackgroundQuery:=False) ‘Refresh for database 
 
+End Sub
