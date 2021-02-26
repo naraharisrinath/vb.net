@@ -9,8 +9,6 @@ public sub test()
   
   xlapp.displayalerts = false
   
-  try
-  
   xlapp.visible = false
   xlwkb = xlapp.workbooks.add(source_path)
   xlwksh = ctype(xlwkb.worksheets.item("data"), Excel.worksheet)
@@ -38,6 +36,5 @@ public sub test()
   for each pc in xlwkb.pivotcaches
     pc.refresh()
   next pc
-   
-  end try
+
 end sub
