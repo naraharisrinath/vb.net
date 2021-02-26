@@ -1,1 +1,43 @@
-
+public sub test()
+  dim xlapp as new excel.application
+  dim xlwkb as excel.workbook = nothing
+  dim xlwksh as excel.workbook = nothing
+  
+  dim source_path as string
+  
+  source_path = ""
+  
+  xlapp.displayalerts = false
+  
+  try
+  
+  xlapp.visible = false
+  xlwkb = xlapp.workbooks.add(source_path)
+  xlwksh = ctype(xlwkb.worksheets.item("data"), Excel.worksheet)
+  RefreshQueryTable(Xlwkb, Xlwksh) ' Please see RefreshQueryTable module for more details
+  
+  dim iTable as excel.listobject
+  dim iQuerytable as excel.querytable
+  
+  for each itable in xlwksh.listobjects
+    if itable.sourcetype = excel.xlistobjectsourcetype.xlsrcquery then
+      'Table is a querytable
+      with itable.querttable
+        .backgroundquery=false 'Setting to wait for query to refresh
+        .refresh
+      end with
+    end if
+  next itable
+  
+  for each iquerytable in xlwksh.querytables
+    iquerytable.refresh(backgroundquery:=False) 'wait for query to refresh
+  next iquerytable
+  
+  dim pc as pivotcache
+  
+  for each pc in xlwkb.pivotcaches
+    pc.refresh()
+  next pc
+   
+  end try
+end sub
