@@ -1,0 +1,12 @@
+                    -----------------WPF Part----------
+                    <ComboBox Name="cmb_project_name_tnm"
+                               ItemsSource="{Binding StatusTypes}"
+                               DisplayMemberPath="project_name"
+                               SelectedValuePath="project_id" Height="28" VerticalAlignment="Top" Margin="19,10,463,0">
+                        <ComboBox.SelectedValue>
+                            <Binding Path="project_id"/>
+                        </ComboBox.SelectedValue>
+                    </ComboBox>
+                    
+                    -----------------Code Part----------
+                    combobox.ItemsSource = dataset.Tables("table_name").DefaultView
